@@ -29,8 +29,8 @@ function App() {
 
   return (
     <div className="container">
-      <Header title="test"></Header>
-      <Tasks tasks={tasksState} onDelete={deleteTask}></Tasks>
+      <Header title="test"/>
+      {tasksState.length > 0 ? <Tasks tasks={tasksState} onDelete={deleteTask}/> : <p>No tasks added!</p>}
     </div>
   );
 }
