@@ -3,7 +3,7 @@ import Button from './Button';
 
 const Header = ({title}) => {
 
-    const onClick = () => {
+    const onClickEvent = () => {
         alert('test!')
     }
 
@@ -13,7 +13,7 @@ const Header = ({title}) => {
             <Button 
                 color="tomato"
                 copy="hello"
-                onClick={onClick} />
+                onClick={onClickEvent} />
         </header>
     )
 }
