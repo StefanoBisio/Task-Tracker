@@ -27,10 +27,20 @@ function App() {
     setTasks(tasksState.filter((task) => task.id !== id))
   }
 
+  const ToggleReminder = (id) => {
+    setTasks(
+      //map the state. if the clicked tab (in Tasks.js) is being mapped, swap its reminded value to its opposite.
+      tasksState.map((task) => 
+        task.id === id ? {...task, reminder : !task.reminder} : task )
+    )
+  }
+
   return (
     <div className="container">
       <Header title="test"/>
-      {tasksState.length > 0 ? <Tasks tasks={tasksState} onDelete={deleteTask}/> : <p>No tasks added!</p>}
+
+      {tasksState.length > 0 ? <Tasks tasks={tasksState} onDelete={deleteTask} onToggle={ToggleReminder}/> : <p>No tasks added!</p>}
+
     </div>
   );
 }
