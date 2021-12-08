@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Header from './components/Header'
 import Tasks from './components/Tasks'
@@ -8,35 +8,50 @@ import AddTasks from './components/AddTask'
 function App() {
   
   const [formShowingState, toggleFormShowing] = useState(false)
-  const [tasksState, setTasks] = useState(
-    [
-        {
-          "id": 1,
-          "text": "Doctors Appointment",
-          "day": "Feb 5th at 2:30pm",
-          "reminder": true
-        },
-        {
-          "id": 2,
-          "text": "Meeting at School",
-          "day": "Feb 6th at 1:30pm",
-          "reminder": true
-        }
-      ]
-  )
+  const [tasksState, setTasks] = useState([])
 
-  const addTaskFromForm = (task) => {
-    //make a unique id
-    const id = Math.floor(Math.random() * 10000) + 1
-    //add the id to the rest of the new task data
-    const newTask = { id, ...task }
-    //add the new task data to the state
-    setTasks([newTask, ...tasksState])
+  useEffect(() => {
+    const getTasks = async () => {
+      const tasksFromServer = await fetchTasks()
+      setTasks(tasksFromServer)
+    }
+
+    getTasks()
+  }, [])
+
+  // Fetch Tasks from sever
+  const fetchTasks = async () => {
+    const res = await fetch('http://localhost:5000/tasks')
+    const data = await res.json()
+
+    return data
   }
 
-  const deleteTask = (id) => {
-    //Keep in the state all ids except the one clicked
-    setTasks(tasksState.filter((task) => task.id !== id))
+  // Delete Task from server
+  const deleteTask = async (id) => {
+    const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+      method: 'DELETE',
+    })
+    //We should control the response status to decide if we will change the state or not.
+    res.status === 200
+      ? setTasks(tasksState.filter((task) => task.id !== id))
+      : alert('Error Deleting This Task')
+  }
+
+  //Add task to server
+  const addTaskFromForm = async (task) => {
+    const res = await fetch('http://localhost:5000/tasks', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(task),
+    })
+
+    //Without the "await" the server data would be updated, but not the UI's
+    const data = await res.json()
+
+    setTasks([...tasksState, data])
   }
 
   const ToggleReminder = (id) => {
