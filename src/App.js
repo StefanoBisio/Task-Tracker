@@ -26,12 +26,16 @@ function App() {
   )
 
   const addTaskFromForm = (task) => {
+    //make a unique id
     const id = Math.floor(Math.random() * 10000) + 1
+    //add the id to the rest of the new task data
     const newTask = { id, ...task }
-    setTasks([...tasksState, newTask])
+    //add the new task data to the state
+    setTasks([newTask, ...tasksState])
   }
 
   const deleteTask = (id) => {
+    //Keep in the state all ids except the one clicked
     setTasks(tasksState.filter((task) => task.id !== id))
   }
 
@@ -46,6 +50,8 @@ function App() {
   return (
     <div className="container">
       <Header title="test" onFormToggle={() => toggleFormShowing(!formShowingState)} formShowingState={formShowingState}/>
+
+      {/* Show form only if the state formShowingState is true (toggled inside of <Header/>*/}
       { formShowingState && <AddTasks onAdd={addTaskFromForm}/>}
 
       {tasksState.length > 0 ? <Tasks tasks={tasksState} onDelete={deleteTask} onToggle={ToggleReminder}/> : <p>No tasks added!</p>}
