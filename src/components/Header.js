@@ -1,19 +1,14 @@
 import PropTypes from 'prop-types';
 import Button from './Button';
 
-const Header = ({title}) => {
-
-    const onClickEvent = () => {
-        alert('test!')
-    }
-
+const Header = ({title, onFormToggle, formShowingState}) => {
     return (
         <header className='header'>
             <h1>{title}</h1>
             <Button 
-                color="tomato"
-                copy="hello"
-                onClick={onClickEvent} />
+                color={formShowingState ? "red" : "green"}
+                copy={formShowingState ? "Close" : "Add"}
+                onClick={onFormToggle} />
         </header>
     )
 }

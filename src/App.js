@@ -2,10 +2,12 @@ import { useState } from 'react';
 
 import Header from './components/Header'
 import Tasks from './components/Tasks'
+import AddTasks from './components/AddTask'
 
 
 function App() {
   
+  const [formShowingState, toggleFormShowing] = useState(false)
   const [tasksState, setTasks] = useState(
     [
         {
@@ -23,6 +25,12 @@ function App() {
       ]
   )
 
+  const addTaskFromForm = (task) => {
+    const id = Math.floor(Math.random() * 10000) + 1
+    const newTask = { id, ...task }
+    setTasks([...tasksState, newTask])
+  }
+
   const deleteTask = (id) => {
     setTasks(tasksState.filter((task) => task.id !== id))
   }
@@ -37,10 +45,10 @@ function App() {
 
   return (
     <div className="container">
-      <Header title="test"/>
+      <Header title="test" onFormToggle={() => toggleFormShowing(!formShowingState)} formShowingState={formShowingState}/>
+      { formShowingState && <AddTasks onAdd={addTaskFromForm}/>}
 
       {tasksState.length > 0 ? <Tasks tasks={tasksState} onDelete={deleteTask} onToggle={ToggleReminder}/> : <p>No tasks added!</p>}
-
     </div>
   );
 }
