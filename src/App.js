@@ -21,21 +21,18 @@ function App() {
 
   // Fetch Tasks from sever
   const fetchTasks = async () => {
-    const res = await fetch('http://localhost:5000/tasks')
+    const res = await fetch(`http://localhost:5000/tasks`)
     const data = await res.json()
 
     return data
   }
 
-  // Delete Task from server
-  const deleteTask = async (id) => {
-    const res = await fetch(`http://localhost:5000/tasks/${id}`, {
-      method: 'DELETE',
-    })
-    //We should control the response status to decide if we will change the state or not.
-    res.status === 200
-      ? setTasks(tasksState.filter((task) => task.id !== id))
-      : alert('Error Deleting This Task')
+  // Fetch Task
+  const fetchTask = async (id) => {
+    const res = await fetch(`http://localhost:5000/tasks/${id}`)
+    const data = await res.json()
+
+    return data
   }
 
   //Add task to server
@@ -54,11 +51,36 @@ function App() {
     setTasks([...tasksState, data])
   }
 
-  const ToggleReminder = (id) => {
+  //Delete Task from server
+  const deleteTask = async (id) => {
+    const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+      method: 'DELETE',
+    })
+    //We should control the response status to decide if we will change the state or not.
+    res.status === 200
+      ? setTasks(tasksState.filter((task) => task.id !== id))
+      : alert('Error Deleting This Task')
+  }
+
+  //Toggle Reminder on server
+  const toggleReminder = async (id) => {
+    const taskToToggle = await fetchTask(id)
+    const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder }
+
+    const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(updTask),
+    })
+
+    const data = await res.json()
+
     setTasks(
-      //map the state. if the clicked tab (in Tasks.js) is being mapped, swap its reminded value to its opposite.
-      tasksState.map((task) => 
-        task.id === id ? {...task, reminder : !task.reminder} : task )
+      tasksState.map((task) =>
+        task.id === id ? { ...task, reminder: data.reminder } : task
+      )
     )
   }
 
@@ -69,7 +91,7 @@ function App() {
       {/* Show form only if the state formShowingState is true (toggled inside of <Header/>*/}
       { formShowingState && <AddTasks onAdd={addTaskFromForm}/>}
 
-      {tasksState.length > 0 ? <Tasks tasks={tasksState} onDelete={deleteTask} onToggle={ToggleReminder}/> : <p>No tasks added!</p>}
+      {tasksState.length > 0 ? <Tasks tasks={tasksState} onDelete={deleteTask} onToggle={toggleReminder}/> : <p>No tasks added!</p>}
     </div>
   );
 }
