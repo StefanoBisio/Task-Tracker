@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Tasks from './components/Tasks'
 import AddTasks from './components/AddTask'
+import About from './components/About'
 
 
 function App() {
@@ -86,15 +88,27 @@ function App() {
   }
 
   return (
-    <div className="container">
-      <Header title="test" onFormToggle={() => toggleFormShowing(!formShowingState)} formShowingState={formShowingState}/>
+    <Router>
+      <div className="container">
+        <Header title="test" onFormToggle={() => toggleFormShowing(!formShowingState)} formShowingState={formShowingState}/>
 
-      {/* Show form only if the state formShowingState is true (toggled inside of <Header/>*/}
-      { formShowingState && <AddTasks onAdd={addTaskFromForm}/>}
+        <Routes>
 
-      {tasksState.length > 0 ? <Tasks tasks={tasksState} onDelete={deleteTask} onToggle={toggleReminder}/> : <p>No tasks added!</p>}
-      <Footer/>
-    </div>
+          <Route path='/' element={
+            <div>
+              {/* Show form only if the state formShowingState is true (toggled inside of <Header/>*/}
+              { formShowingState && <AddTasks onAdd={addTaskFromForm}/>}
+              {tasksState.length > 0 ? <Tasks tasks={tasksState} onDelete={deleteTask} onToggle={toggleReminder}/> : <p>No tasks added!</p>}
+            </div>
+          }/>
+
+          <Route path='/about' element={<About/>} />
+        </Routes>
+
+        <Footer/>
+
+      </div>
+    </Router>
   );
 }
 
