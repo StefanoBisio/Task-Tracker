@@ -42,6 +42,7 @@ function App() {
   const addTaskFromForm = async (task) => {
     const res = await fetch('http://localhost:5000/tasks', {
       method: 'POST',
+      //Refer here for all possible settings in the fetch method https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
       headers: {
         'Content-type': 'application/json',
       },
